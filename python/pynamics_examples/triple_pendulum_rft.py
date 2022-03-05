@@ -148,3 +148,5 @@ states0,constants0 = myfunc([1e1,1e2])
 points_output = PointsOutput(points,system,constant_values = constants0)
 y = points_output.calc(states0,t)
 points_output.plot_time()
+#points_output.animate(fps = fps,movie_name = 'triple_pendulum_rft.mp4',lw=2)
+
