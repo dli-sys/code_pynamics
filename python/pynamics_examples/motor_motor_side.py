@@ -24,6 +24,7 @@ import numpy
 import matplotlib.pyplot as plt
 plt.ion()
 from math import pi
+import math
 
 system = System()
 pynamics.set_system(__name__,system)
@@ -53,15 +54,15 @@ i,i_d= Differentiable('i',ii=1,system=system)
 
 
 constants = {}
-constants[L] = .5
-constants[V] = 1
-constants[R] = 1
-constants[G] = 10
-constants[Im] = .01
+constants[L] = .299e-3
+constants[V] = 12
+constants[R] = 33.3
+constants[G] = 1
+constants[Im] = .111/1000/100/100
 constants[Il] = .1
-constants[b] = .1
-constants[kv] = .01
-constants[kt] = .01
+constants[b] = 0
+constants[kt] = 1060*2*math.pi/60
+constants[kv] = 1/constants[kt]
 constants[Tl] = 0
 constants[m] = 1
 constants[g] = 9.81
