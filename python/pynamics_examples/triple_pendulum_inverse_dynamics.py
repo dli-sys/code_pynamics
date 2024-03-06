@@ -19,7 +19,7 @@ import scipy.interpolate
 import sympy
 import numpy
 import matplotlib.pyplot as plt
-plt.ion()
+# plt.ion()
 from math import pi
 system = System()
 pynamics.set_system(__name__,system)
@@ -40,7 +40,7 @@ k = Constant(1e1,'k',system)
 
 tinitial = 0
 tfinal = 5
-tstep = 1/10
+tstep = 1/1000
 t = numpy.r_[tinitial:tfinal:tstep]
 
 
@@ -67,12 +67,17 @@ qC_exp = qC_exp[2:-2]
 t = t[2:-2]
 states_exp = numpy.c_[qA_exp,qB_exp,qC_exp,qA_d_exp,qB_d_exp,qC_d_exp,qA_dd_exp,qB_dd_exp,qC_dd_exp]
 
-y = numpy.array([qA_exp,qB_exp,qC_exp]).T
+q_exp = numpy.array([qA_exp,qB_exp,qC_exp]).T
 plt.figure()
-plt.plot(t,y)
+plt.plot(t,q_exp)
+plt.title('q_exp')
 
+
+q_dd_exp = numpy.array([qA_dd_exp,qB_dd_exp,qC_dd_exp]).T
 plt.figure()
-plt.plot(t,numpy.array([qA_dd_exp,qB_dd_exp,qC_dd_exp]).T)
+plt.plot(t,q_dd_exp)
+plt.title('q_dd_exp')
+
 
 
 preload1 = Constant(0*pi/180,'preload1',system)
@@ -195,6 +200,7 @@ ft3 = scipy.interpolate.interp1d(t,res[:,2],fill_value = 'extrapolate', kind='qu
 
 plt.figure()
 plt.plot(t,numpy.array([ft1(t),ft2(t),ft3(t)]).T,'-o')
+plt.title('joint torques')
 
 variable_functions = {t1:ft1,t2:ft2,t3:ft3}
 
@@ -210,21 +216,34 @@ PE = system.getPEGravity(pNA) - system.getPESprings()
 points = [pNA,pAB,pBC,pCtip]
 #points = [item for item2 in points for item in [item2.dot(system.newtonian.x),item2.dot(system.newtonian.y)]]
 points_output = PointsOutput(points,system)
+y = points_output.calc(states_exp[:,:6],t)
+# points_output.plot_time()
+plt.figure()
+plt.plot(*(y[::int(len(y)/20)].T))
+plt.axis('equal')
+plt.title('y_exp')
+
+
 y = points_output.calc(states,t)
 #y.resize(y.shape[0],int(y.shape[1]/2),2)
 
 plt.figure()
 plt.plot(t,states[:,:3])
+plt.title('q')
 
 plt.figure()
 plt.plot(*(y[::int(len(y)/20)].T))
 plt.axis('equal')
+plt.title('y')
 
 energy_output = Output([KE-PE],system)
 energy_output.calc(states,t)
 
-plt.figure()
-plt.plot(energy_output.y)
+# plt.figure()
+# plt.plot(energy_output.y)
+# plt.title('energy')
+plt.show()
+
 
 # points_output.animate(fps = 100,movie_name = 'render.mp4',lw=2,marker='o',color=(1,0,0,1),linestyle='-')
 #a()
