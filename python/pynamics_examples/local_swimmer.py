@@ -1,3 +1,10 @@
+import sys
+import os
+# # Add the path to the pynamics module
+# module_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'pynamics'))
+# if module_path not in sys.path:
+#     sys.path.append(module_path)
+
 import pynamics
 import pynamics.frame
 from pynamics.variable_types import Differentiable,Constant
@@ -8,8 +15,6 @@ from pynamics.output import Output,PointsOutput
 from pynamics.particle import Particle
 import pynamics.integration
 import pynamics.tanh as tanh
-
-
 
 from numpy import pi
 import matplotlib
