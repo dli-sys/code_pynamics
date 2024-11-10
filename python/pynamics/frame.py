@@ -117,7 +117,7 @@ class Frame(NameGenerator):
     def get_rq_from(self,other):
         return self.get_generic(other,'R').get_rq_from(other)
 
-    def get_w_from(self,other):
+    def get_w_from(self, other: object) -> object:
         return self.get_generic(other,'w').get_w_from(other)
 
     def get_w_to(self,other):

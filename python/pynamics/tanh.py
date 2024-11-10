@@ -64,14 +64,75 @@ def gen_spring_force(s, scaling, x0n, x1n, k1,k2,k3,plot=False):
     y2 = y.subs({x:s,x1:x1n,x0:x0n})
     return y2
 
+
+def gen_spring_force2(s, scaling, x0n, x1n, k1, k2, k3, plot=False):
+    x = sympy.Symbol('x')
+    x0 = sympy.Symbol('x0')
+    x1 = sympy.Symbol('x1')
+
+    f1 = (sympy.tanh(scaling * (x - x0)) + 1) / 2
+    f2 = (sympy.tanh(-scaling * (x - x0)) + 1) / 2
+    f3 = (sympy.tanh(scaling * (x - x1)) + 1) / 2
+    f4 = (sympy.tanh(-scaling * (x - x1)) + 1) / 2
+
+    if plot:
+        xn = numpy.r_[-5:5:100j]
+
+        f1n = numpy.array([f1.evalf(subs={x: item, x0: x0n, x1: x1n}) for item in xn])
+        f2n = numpy.array([f2.evalf(subs={x: item, x0: x0n, x1: x1n}) for item in xn])
+        f3n = numpy.array([f3.evalf(subs={x: item, x0: x0n, x1: x1n}) for item in xn])
+        f4n = numpy.array([f4.evalf(subs={x: item, x0: x0n, x1: x1n}) for item in xn])
+
+        plt.figure()
+        plt.plot(xn, f1n)
+        plt.plot(xn, f2n)
+
+        plt.figure()
+        plt.plot(xn, f3n)
+        plt.plot(xn, f4n)
+    #
+    #    k1 = 2e1
+    #    k2 = 1e1
+    #    k3 = 0e1
+
+    y0 = (k1 * f1 + k2 * f2) * (x)
+    y2 = k3 * x
+
+    y0n = y0.subs({x: x1n, x0: x0n, x1: x1n}).evalf()
+    y2n = y2.subs({x: x1n, x0: x0n, x1: x1n}).evalf()
+
+    y = (k1 * f1 + k2 * f2 * f3 + k3 * f4) * (x) + f4 * y0n - f4 * y2n
+
+    scaling = 1  # Smooth transition
+    x0n = -1e-5  # Control how wide the transition is
+
+    f1n =  sympy.tanh((scaling*(x+x0n)))
+    f2n = -sympy.tanh((scaling*(x-x0n)))
+    # approx_abs_x =  (sympy.tanh(x + x0n) - sympy.tanh(x - x0n)) / 2
+    y = (f1n+f2n)/1
+         # /(1/(-x0n+numpy.tanh(x0n/2)))
+    # y = (((f1n+f2n)/2)/x0n*/x0n)
+
+    if plot:
+        yn = numpy.array([y.evalf(subs={x: item, x0: x0n, x1: x1n}) for item in xn])
+        # plt.figure()
+        plt.plot(xn, yn)
+
+        plt.ion()
+        plt.show()
+
+    y2 = y.subs({x: s, x1: x1n, x0: x0n})
+    return y2
+
 if __name__=='__main__':
     s = sympy.Symbol('s')
     #f = gen_spring_force(s,100, 0, -10*pi/180, 32.3783, 7.6504, 0e1)
 #    f2 = gen_spring_force(s,1000, 0, -0.00866, 32.3783, 1*6.68, 0e1,plot=True)
-#    f2 = gen_spring_force(s,1000, 0, 0*pi/180, 1e0, 1e0, 0e1,plot=True)
-    f2 = gen_spring_force(s,1000, 0, 0, 1e3, 0e1, 0e1,plot=True)
-    
-    
+    f2 = gen_spring_force(s,1000, 0, 0*pi/180, -1, 1, 1,plot=True)
+#     f2 = gen_spring_force2(s,scaling=1e3, x0n=-1e-3, x1n=1e-3, k1=1, k2=-1, k3=0,plot=True)
+    # f2 = gen_spring_force2(s, 1000, -0.25, 0.25, 1, 1, 0e1, plot=True)
+
     plt.xlabel('Theta')
     plt.ylabel('Torque')
     plt.title('Stiffness (Torque vs. Theta)')
+    plt.show(block=True)
