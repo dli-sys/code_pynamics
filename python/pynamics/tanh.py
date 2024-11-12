@@ -39,7 +39,6 @@ def gen_spring_force(s, scaling, x0n, x1n, k1, k2, k3, plot=False):
     x1 = sympy.Symbol('x1')
 
     #    scaling = 10
-
     #    x0n = 0
     #    x1n = -4
     #    x1n = -pi/4
@@ -90,7 +89,7 @@ if __name__=='__main__':
     s = sympy.Symbol('s')
     #f = gen_spring_force(s,100, 0, -10*pi/180, 32.3783, 7.6504, 0e1)
 #    f2 = gen_spring_force(s,1000, 0, -0.00866, 32.3783, 1*6.68, 0e1,plot=True)
-    f2 = gen_static_friction(s, 1000, 0, 0 * pi / 180, -1, 1, 1, plot=True)
+    f2 = gen_static_friction(s, plot=True)
     # f2 = gen_spring_force(s,1000, 0, 0*pi/180, -1, 1, 1,plot=False)
 #     f2 = gen_spring_force2(s,scaling=1e3, x0n=-1e-3, x1n=1e-3, k1=1, k2=-1, k3=0,plot=True)
     # f2 = gen_spring_force2(s, 1000, -0.25, 0.25, 1, 1, 0e1, plot=True)
