@@ -341,7 +341,7 @@ class System(object):
 
         return func
 
-    def state_space_post_invert(self,f,ma,eq_dd = None,constants = None,q_acceleration = None, q_speed = None, q_position = None,return_lambda = False,variable_functions = None):
+    def state_space_post_invert(self,f,ma,eq_dd = None,constants = None,q_acceleration = None, q_speed = None, q_position = None,return_lambda = False,variable_functions = None,simplify=True):
         '''invert A matrix each call'''
         logger.info('solving a = f/m and creating function')
         
@@ -357,10 +357,15 @@ class System(object):
         q_d = q_speed or self.get_q(1)
         q_dd = q_acceleration or self.get_q(2)
         q_state = q+q_d
-        
+
+        # if simplify:
+        #     f = f.simplify()
+            # ma = ma.simplify()
+
         f = sympy.Matrix(f)
         ma = sympy.Matrix(ma)
-        
+
+
         Ax_b = ma-f
         if not not constants:
             Ax_b = Ax_b.subs(constants)
