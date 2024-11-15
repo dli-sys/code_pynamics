@@ -21,13 +21,13 @@ class PointsOutput(Output):
         self.y.resize(self.y.shape[0],int(self.y.shape[1]/2),2)
         return self.y
 
-    def animate(self,fps = 30,stepsize=1, movie_name = None,*args,**kwargs):
+    def animate(self,fps = 30,stepsize=1,scale=1,movie_name = None,*args,**kwargs):
         # import numpy as np
         import matplotlib.pyplot as plt
         
         from matplotlib import animation, rc
 
-        y = self.y
+        y = self.y * scale
 
         f = plt.figure()
         ax = f.add_subplot(1,1,1,aspect = 'equal',autoscale_on=False)
@@ -52,7 +52,8 @@ class PointsOutput(Output):
         self.anim = animation.FuncAnimation(f, run, init_func=init,frames=y[::stepsize], interval=1/fps*1000, blit=True,repeat = True,repeat_delay=3000)        
         if movie_name is not None:
             self.anim.save(movie_name, fps=fps,writer='ffmpeg')
-        return ax
+
+        # return ax
             
     def plot_time(self,stepsize=1,fig = None,linestyle='b-'):
         import matplotlib.pyplot as plt
@@ -82,3 +83,28 @@ class PointsOutput(Output):
             ax.plot(self.y[::stepsize,:,0].T*amplify+displacement[0],self.y[::stepsize,:,1].T*amplify+displacement[1],linestyle=linestyle,color=color)
             ax.axis('equal')
         return ax
+
+    def point_anim(y1, fps=30, stepsize=1, scale=1e3, movie_name=None,title="None", *args, **kwargs):
+        import matplotlib.pyplot as plt
+        from matplotlib import animation, rc
+        f = plt.figure()
+        y = y1 * scale
+        ax = f.add_subplot(1, 1, 1, aspect='equal', autoscale_on=False)
+        limits = [y[:, :, 0].min(), y[:, :, 0].max(), y[:, :, 1].min(), y[:, :, 1].max()]
+        ax.axis(limits)
+        plt.title(title)
+        line, = ax.plot([], [], *args, **kwargs)
+        def init():
+            line.set_data([], [])
+            return (line,)
+
+        def run(item):
+            line.set_data(*(item.T))
+            #            ax.axis('equal')
+            #            ax.axis(limits)
+            return (line,)
+
+        anim = animation.FuncAnimation(f, run, init_func=init, frames=y[::stepsize], interval=1 / fps * 1000, blit=True,
+                                       repeat=True, repeat_delay=3000)
+        if movie_name is not None:
+            anim.save(movie_name, fps=fps, writer='ffmpeg')
